@@ -26,3 +26,32 @@ async function fetchCryptoData() {
 // Загружаем данные при загрузке страницы
 fetchCryptoData();
 setInterval(fetchCryptoData, 60000); // Обновляем раз в минуту
+
+// ==================== Подключение MetaMask ====================
+document.getElementById('connect-metamask').addEventListener('click', async () => {
+    if (window.ethereum) {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            document.getElementById('wallet-address').innerText = `Адрес кошелька: ${accounts[0]}`;
+        } catch (error) {
+            console.error("Ошибка подключения MetaMask:", error);
+        }
+    } else {
+        alert("MetaMask не установлен! Установите расширение MetaMask в браузер.");
+    }
+});
+
+// ==================== Подключение Phantom ====================
+document.getElementById('connect-phantom').addEventListener('click', async () => {
+    if (window.solana && window.solana.isPhantom) {
+        try {
+            const response = await window.solana.connect();
+            document.getElementById('wallet-address').innerText = `Адрес кошелька: ${response.publicKey.toString()}`;
+        } catch (error) {
+            console.error("Ошибка подключения Phantom:", error);
+        }
+    } else {
+        alert("Phantom Wallet не установлен! Установите расширение Phantom в браузер.");
+    }
+});
