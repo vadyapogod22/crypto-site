@@ -46,7 +46,7 @@ let cryptoChart;
 
 // Функция для загрузки данных и обновления графика
 async function updateCryptoChart() {
-    const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,cardano,solana,dogecoin,ripple,polkadot,tron&order=market_cap_desc');
+    const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,cardano,solana,dogecoin&order=market_cap_desc');
     const data = await response.json();
 
     const labels = data.map(coin => coin.name);
@@ -59,24 +59,73 @@ async function updateCryptoChart() {
     }
 
     cryptoChart = new Chart(ctx, {
-        type: 'line', // Линейный график
+        type: 'line', // Линейный график в финансовом стиле
         data: {
             labels: labels,
             datasets: [{
                 label: 'Цена в USD',
                 data: prices,
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                borderWidth: 2
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                borderWidth: 2,
+                pointRadius: 3, // Уменьшаем точки данных
+                pointHoverRadius: 5, // Делаем точки больше при наведении
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: "rgba(0, 0, 0, 0.1)" // Тонкая сетка, как в финансовых графиках
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false // Убираем вертикальную сетку для чистого вида
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: "#fff",
+                    titleColor: "#000",
+                    bodyColor: "#000",
+                    borderColor: "#007bff",
+                    borderWidth: 1
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0.3 // Легкое сглаживание линии
+                }
+            }
         }
     });
 }
 
 // Загружаем график при загрузке страницы
 updateCryptoChart();
-setInterval(updateCryptoChart, 10000); // Обновляем график каждые 10 секунд
+setInterval(updateCryptoChart, 30000); // Обновляем график каждые 30 секунд
