@@ -29,11 +29,18 @@ setInterval(fetchCryptoData, 60000); // Обновляем раз в минут�
 
 // ==================== Подключение MetaMask ====================
 document.getElementById('connect-metamask').addEventListener('click', async () => {
-    if (window.ethereum) {
+    if (typeof window.ethereum !== 'undefined') {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            document.getElementById('wallet-address').innerText = `Адрес кошелька: ${accounts[0]}`;
+            // Запрос на подключение MetaMask
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+            // Проверяем, получили ли мы кошелек
+            if (accounts.length > 0) {
+                document.getElementById('wallet-address').innerText = `Адрес кошелька: ${accounts[0]}`;
+                console.log("MetaMask подключен:", accounts[0]);
+            } else {
+                console.log("MetaMask не дал адрес кошелька.");
+            }
         } catch (error) {
             console.error("Ошибка подключения MetaMask:", error);
         }
@@ -41,6 +48,7 @@ document.getElementById('connect-metamask').addEventListener('click', async () =
         alert("MetaMask не установлен! Установите расширение MetaMask в браузер.");
     }
 });
+
 
 // ==================== Подключение Phantom ====================
 document.getElementById('connect-phantom').addEventListener('click', async () => {
