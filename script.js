@@ -25,4 +25,4 @@ async function fetchCryptoData() {
 
 // Загружаем данные при загрузке страницы
 fetchCryptoData();
-setInterval(fetchCryptoData, 1000); // Обновляем раз в минуту
+setInterval(fetchCryptoData, 60000); // Обновляем раз в минуту
