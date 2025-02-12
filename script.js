@@ -40,3 +40,43 @@ document.getElementById('connect-phantom').addEventListener('click', async () =>
         alert("Phantom Wallet не установлен! Установите расширение Phantom в браузер.");
     }
 });
+
+// Глобальная переменная для хранения графика
+let cryptoChart;
+
+// Функция для загрузки данных и обновления графика
+async function updateCryptoChart() {
+    const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,cardano,solana,dogecoin,ripple,polkadot,tron&order=market_cap_desc');
+    const data = await response.json();
+
+    const labels = data.map(coin => coin.name);
+    const prices = data.map(coin => coin.current_price);
+
+    const ctx = document.getElementById('cryptoChart').getContext('2d');
+
+    if (cryptoChart) {
+        cryptoChart.destroy(); // Удаляем старый график перед созданием нового
+    }
+
+    cryptoChart = new Chart(ctx, {
+        type: 'line', // Линейный график
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Цена в USD',
+                data: prices,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+// Загружаем график при загрузке страницы
+updateCryptoChart();
+setInterval(updateCryptoChart, 10000); // Обновляем график каждые 10 секунд

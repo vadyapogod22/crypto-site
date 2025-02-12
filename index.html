@@ -15,6 +15,7 @@
     <button id="connect-phantom">Подключить Phantom</button>
     <p id="wallet-address">Адрес кошелька: не подключен</p>
 
+    <!-- Таблица курсов -->
     <table>
         <thead>
             <tr>
@@ -26,6 +27,15 @@
             <!-- Данные будут загружаться сюда -->
         </tbody>
     </table>
+
+    <!-- График цен криптовалют -->
+    <h2>График цен криптовалют</h2>
+    <canvas id="cryptoChart"></canvas>
+
+    <!-- Подключаем Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Подключаем основной скрипт -->
     <script src="script.js"></script>
 </body>
 
