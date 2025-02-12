@@ -27,20 +27,20 @@ async function fetchCryptoData() {
 fetchCryptoData();
 setInterval(fetchCryptoData, 60000); // Обновляем раз в минуту
 
-// ==================== Подключение MetaMask ====================
+// ==================== Подключение MetaMask (Ethereum) ====================
 document.getElementById('connect-metamask').addEventListener('click', async () => {
-    if (typeof window.ethereum !== 'undefined') {
+    if (window.ethereum && window.ethereum.isMetaMask) {
         try {
-            // Запрос на подключение MetaMask
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const address = await signer.getAddress();
 
-            // Проверяем, получили ли мы кошелек
-            if (accounts.length > 0) {
-                document.getElementById('wallet-address').innerText = `Адрес кошелька: ${accounts[0]}`;
-                console.log("MetaMask подключен:", accounts[0]);
-            } else {
-                console.log("MetaMask не дал адрес кошелька.");
-            }
+            // Проверяем, действительно ли это MetaMask, а не Phantom
+            const network = await provider.getNetwork();
+            console.log("Подключено к сети:", network);
+
+            document.getElementById('wallet-address').innerText = `MetaMask: ${address}`;
         } catch (error) {
             console.error("Ошибка подключения MetaMask:", error);
         }
@@ -49,13 +49,12 @@ document.getElementById('connect-metamask').addEventListener('click', async () =
     }
 });
 
-
-// ==================== Подключение Phantom ====================
+// ==================== Подключение Phantom (Solana) ====================
 document.getElementById('connect-phantom').addEventListener('click', async () => {
     if (window.solana && window.solana.isPhantom) {
         try {
             const response = await window.solana.connect();
-            document.getElementById('wallet-address').innerText = `Адрес кошелька: ${response.publicKey.toString()}`;
+            document.getElementById('wallet-address').innerText = `Phantom: ${response.publicKey.toString()}`;
         } catch (error) {
             console.error("Ошибка подключения Phantom:", error);
         }
